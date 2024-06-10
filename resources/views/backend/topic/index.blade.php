@@ -1,6 +1,12 @@
 @extends('layouts.admin')
 @section('title','Quản lí chủ đề')
 @section('content')
+@if (session('success'))
+    <div id="success-message" class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -22,7 +28,7 @@
       <div class="row">
         <div class="col-12 text-right">
          
-          <a class="btn btn-sm btn-danger" href="#">Thùng rác
+          <a class="btn btn-sm btn-danger" href="{{ route('admin.topic.trash') }}">Thùng rác
             <i class="fas fa-trash"></i>
           </a>
         </div>
@@ -30,37 +36,56 @@
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col-md-3">
-          <div class="form-group">
-              <label class="name">Tên chủ đề: *</label>
-              <input type="text" class="form-control" name="name" placeholder="Nhập tên chủ đề" name="fname" />
-          </div>
-          <div class="form-group">
-              <label class="slug">Slug: </label>
-              <input type="text" class="form-control" name="slug" placeholder="Nhập slug" name="fname" />
-          </div>
-          <div class="form-group">
-            <label>Mô tả: </label>
-            <textarea name="description" placeholder="Nhập mô tả" class="form-control"></textarea>
-          </div>
-          <div class="mb-3">
-              <button class="btn btn-primary" type="submit" id="submit" name="submit">
-                  <p>Lưu</p>
-              </button>
-          </div>
+        <div class="col-md-4">
+          <form action="{{ route('admin.topic.store') }}" method="post" enctype="multipart/form-data">
+            @csrf  
+            <div class="mb-3">
+                <label for="name">Tên chủ đề</label>
+                <input type="text" value="{{ old('name') }}" name="name" id="name" class="form-control">
+                @error('name')
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="mb-3">
+                <label for="description">Mô tả</label>
+                <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="sort_order">Sắp xếp</label>
+                <select name="sort_order" id="sort_order" class="form-control">
+                    <option value="0">None</option>
+                    {!! $htmlsortorder !!}
+
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="status">Trạng thái</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="2">Chưa xuất bản</option>
+                    <option value="1">Xuất bản</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <button type="submit" name="create" class="btn btn-success">Thêm danh
+                    mục</button>
+            </div>
+        </form>
       </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                   <th class="text-center" style="width:30px">#</th>
                   <th class="text-center">Tên chủ đề</th>
-                  <th class="text-center">Slug</th>
-    
+                  <th class="text-center">Liên kết</th>
+                  
                   <th class="text-center" style="width:190px">Chức năng</th>
                   <th class="text-center" style="width:30px">id</th>
                 </thead>
                 <tbody>
                   @foreach ($list as $row)
+                  @php
+                  $arg=['id'=>$row->id];
+                @endphp
                   <tr>
                     <td class="text-center">
                       <input type="checkbox" name="checkID[]" id="checkID" value="1">
@@ -72,19 +97,26 @@
                     <td>
                       {{ $row->slug }}
                     </td>
+                   
                     <td class="text-center">
-                      <a href="{{ route("admin.topic.status",['id'=>$row->id]) }}" class="btn btn-sm btn-success" >
-                        <i class="fas fa-toggle-on"></i>
+                      @if ($row->status == 1)
+                      <a href="{{ route('admin.topic.status', $row->id) }}" class="btn btn-success btn-xs">
+                          <i class="fas fa-toggle-on"></i>
                       </a>
-                      <a href="{{ route("admin.topic.show",['id'=>$row->id]) }}" class="btn btn-sm btn-info" >
-                        <i class="fas fa-eye"></i>
+                  @else
+                      <a href="{{ route('admin.topic.status', $row->id) }}" class="btn btn-danger btn-xs">
+                          <i class="fas fa-toggle-off"></i>
                       </a>
-                      <a href="{{ route("admin.topic.edit",['id'=>$row->id]) }}" class="btn btn-sm btn-primary" >
-                        <i class="fas fa-edit"></i>
-                      </a>
-                      <a href="{{ route("admin.topic.delete",['id'=>$row->id]) }}" class="btn btn-sm btn-danger" >
-                        <i class="fas fa-trash"></i>
-                      </a>
+                  @endif
+                  <a href="{{ route('admin.topic.edit', $row->id) }}" class="btn btn-primary btn-xs">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="{{ route('admin.topic.show', $row->id) }}" class="btn btn-info btn-xs">
+                    <i class="fas fa-eye"></i>
+                </a>
+                <a href="{{ route('admin.topic.delete', $row->id) }}" class="btn btn-danger btn-xs">
+                    <i class="fas fa-trash"></i>
+                </a>
                     </td>
                     <td class="text-center">{{ $row->id }}</td>
                   </tr>  

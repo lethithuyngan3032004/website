@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lttn_post', function (Blueprint $table) {
+        Schema::create('post', function (Blueprint $table) {
             $table->id(); // id
             $table->unsignedInteger('topic_id')->nullable();
             $table->string('title', 1000);

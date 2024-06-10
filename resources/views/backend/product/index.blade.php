@@ -3,6 +3,11 @@
 @section('title', 'Quản lí sản phẩm')
 
 @section('content')
+@if (session('success'))
+<div id="success-message" class="alert alert-success">
+  {{ session('success') }}
+</div>
+@endif
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -27,24 +32,14 @@
           <a class="btn btn-sm btn-success" href="{{ route("admin.product.create")}}">Thêm
             <i class="fas fa-plus"></i>
           </a>
-          <a class="btn btn-sm btn-danger" href="#">Thùng rác
+          <a class="btn btn-sm btn-danger" href="{{ route('admin.product.trash') }}">Thùng rác
             <i class="fas fa-trash"></i>
           </a>
         </div>
       </div>
     </div>
     <div class="card-body">
-      @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+   
       <table class="table table-bordered table-hover table-striped">
         <thead>
           <tr>
@@ -59,27 +54,38 @@
         </thead>
         <tbody>
           @foreach($list as $row)
+          @php
+          $arg=['id'=>$row->id];
+        @endphp
           <tr>
             <td class="text-center">
               <input type="checkbox" name="checkID[]" id="checkID" value="{{ $row->id }}">
             </td>
             <td class="text-center">
-              <img src="{{ $row->image }}" class="img-fluid" alt="{{ $row->name }}">
+              <img src="{{ asset("images/products/".$row->image) }}" class="img-fluid" alt="{{ $row->image }}">
             </td>
             <td>{{ $row->name }}</td>
             <td>{{ $row->categoryname }}</td>
             <td>{{ $row->brandname }}</td>
             <td class="text-center">
-              <a href="{{ route('admin.product.status', ['id' => $row->id]) }}" class="btn btn-sm btn-success">
-                <i class="fas fa-toggle-on"></i>
-            </a>
-              <a href="{{ route("admin.product.show",['id'=>$row->id]) }}" class="btn btn-sm btn-info" >
+              @if ($row->status == 1)
+              <a href="javascript:void(0);" class="btn btn-success btn-sm toggle-status" data-id="{{ $row->id }}">
+                  <i class="fas fa-toggle-on"></i>
+              </a>
+          @else
+              <a href="javascript:void(0);" class="btn btn-danger btn-sm toggle-status" data-id="{{ $row->id }}">
+                  <i class="fas fa-toggle-off"></i>
+              </a>
+          @endif
+          
+          
+              <a href="{{ route("admin.product.show",$arg) }}" class="btn btn-sm btn-info" >
                 <i class="fas fa-eye"></i>
               </a>
-              <a href="{{ route("admin.product.edit",['id'=>$row->id]) }}" class="btn btn-sm btn-primary" >
+              <a href="{{ route("admin.product.edit",$arg) }}" class="btn btn-sm btn-primary" >
                 <i class="fas fa-edit"></i>
               </a>
-              <a href="{{ route("admin.product.destroy",['id'=>$row->id]) }}" class="btn btn-sm btn-danger" >
+              <a href="{{ route("admin.product.destroy",$arg) }}" class="btn btn-sm btn-danger" >
                 <i class="fas fa-trash"></i>
               </a>
             </td>
@@ -92,4 +98,37 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.toggle-status').forEach(function(button) {
+          button.addEventListener('click', function() {
+              const productId = this.getAttribute('data-id'); // Thay vì sử dụng categoryId, bạn sẽ sử dụng productId
+              const button = this;
+
+              fetch(`{{ url('admin/product/status/') }}/${productId}`, { // Thay đổi URL endpoint
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  }
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.status == 1) {
+                      button.classList.remove('btn-danger');
+                      button.classList.add('btn-success');
+                      button.innerHTML = '<i class="fas fa-toggle-on"></i>';
+                  } else {
+                      button.classList.remove('btn-success');
+                      button.classList.add('btn-danger');
+                      button.innerHTML = '<i class="fas fa-toggle-off"></i>';
+                  }
+              })
+              .catch(error => console.error('Error:', error));
+          });
+      });
+  });
+</script>
+
 @endsection

@@ -9,5 +9,13 @@ class Menu extends Model
 {
     use HasFactory;
     protected $table = 'menu';
-
+    protected $fillable = [
+        'name',
+        'link',
+        'position',
+        'status',
+        'type',
+        'created_by',
+        
+    ];
 }

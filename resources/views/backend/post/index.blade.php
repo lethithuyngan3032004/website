@@ -3,6 +3,11 @@
 @section('title', 'Quản lí bài viết')
 
 @section('content')
+@if (session('success'))
+    <div id="success-message" class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -27,24 +32,14 @@
           <a class="btn btn-sm btn-success" href="{{ route("admin.post.create")}}">Thêm
             <i class="fas fa-plus"></i>
           </a>
-          <a class="btn btn-sm btn-danger" href="#">Thùng rác
+          <a class="btn btn-sm btn-danger" href="{{ route('admin.post.trash') }}">Thùng rác
             <i class="fas fa-trash"></i>
           </a>
         </div>
       </div>
     </div>
     <div class="card-body">
-      @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+    
       <table class="table table-bordered table-hover table-striped">
         <thead>
           <tr>
@@ -59,6 +54,9 @@
         </thead>
         <tbody>
           @foreach($list as $row)
+          @php
+          $arg=['id'=>$row->id];
+        @endphp
           <tr>
             <td class="text-center">
               <input type="checkbox" name="checkID[]" id="checkID" value="{{ $row->id }}">
@@ -70,16 +68,23 @@
             <td>{{ $row->topicname }}</td>
             <td>{{ $row->type }}</td>
             <td class="text-center">
-              <a href="{{ route("admin.post.status",['id'=>$row->id]) }}" class="btn btn-sm btn-success" >
+              @if ($row->status == 1)
+              <a href="{{ route("admin.post.status",$arg) }}" class="btn btn-sm btn-success" >
                 <i class="fas fa-toggle-on"></i>
               </a>
-              <a href="{{ route("admin.post.show",['id'=>$row->id]) }}" class="btn btn-sm btn-info" >
+              @else
+              <a href="{{ route("admin.post.status",$arg) }}" class="btn btn-sm btn-danger" >
+                <i class="fas fa-toggle-off"></i>
+              </a>
+              @endif
+
+              <a href="{{ route("admin.post.show",$arg) }}" class="btn btn-sm btn-info" >
                 <i class="fas fa-eye"></i>
               </a>
-              <a href="{{ route("admin.post.edit",['id'=>$row->id]) }}" class="btn btn-sm btn-primary" >
+              <a href="{{ route("admin.post.edit",$arg) }}" class="btn btn-sm btn-primary" >
                 <i class="fas fa-edit"></i>
               </a>
-              <a href="{{ route("admin.post.destroy",['id'=>$row->id]) }}" class="btn btn-sm btn-danger" >
+              <a href="{{ route("admin.post.destroy",$arg) }}" class="btn btn-sm btn-danger" >
                 <i class="fas fa-trash"></i>
               </a>
             </td>

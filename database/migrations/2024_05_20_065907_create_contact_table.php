@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lttn_contact', function (Blueprint $table) {
+        Schema::create('contact', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id')->nullable();
             $table->string('name');

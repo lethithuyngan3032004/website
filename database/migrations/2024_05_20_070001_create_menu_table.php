@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lttn_menu', function (Blueprint $table) {
+        Schema::create('menu', function (Blueprint $table) {
             $table->id();
             $table->string('name', 1000);
             $table->string('link', 1000);

@@ -25,7 +25,7 @@
       <div class="row">
         <div class="col-12 text-right">
          
-          <a class="btn btn-sm btn-danger" href="#">Thùng rác
+          <a class="btn btn-sm btn-danger" href="{{ route('admin.contact.trash') }}">Thùng rác
             <i class="fas fa-trash"></i>
           </a>
         </div>
@@ -57,6 +57,9 @@
         </thead>
         <tbody>
           @foreach($list as $row)
+          @php
+          $arg=['id'=>$row->id];
+        @endphp
           <tr>
             <td class="text-center">
               <input type="checkbox" name="checkID[]" id="checkID" value="{{ $row->id }}">
@@ -66,16 +69,16 @@
             <td>{{ $row->email }}</td>
             <td>{{ $row->title }}</td>
             <td class="text-center">
-              <a href="{{ route("admin.contact.status",['id'=>$row->id]) }}" class="btn btn-sm btn-success" >
+              <a href="{{ route("admin.contact.status",$arg) }}" class="btn btn-sm btn-success" >
                 <i class="fas fa-toggle-on"></i>
               </a>
-              <a href="{{ route("admin.contact.show",['id'=>$row->id]) }}" class="btn btn-sm btn-info" >
+              <a href="{{ route("admin.contact.show",$arg) }}" class="btn btn-sm btn-info" >
                 <i class="fas fa-eye"></i>
               </a>
-              <a href="{{ route("admin.contact.edit",['id'=>$row->id]) }}" class="btn btn-sm btn-primary" >
+              <a href="{{ route("admin.contact.edit",$arg) }}" class="btn btn-sm btn-primary" >
                 <i class="fas fa-edit"></i>
               </a>
-              <a href="{{ route("admin.contact.destroy",['id'=>$row->id]) }}" class="btn btn-sm btn-danger" >
+              <a href="{{ route("admin.contact.destroy",$arg) }}" class="btn btn-sm btn-danger" >
                 <i class="fas fa-trash"></i>
               </a>
             </td>

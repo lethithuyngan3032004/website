@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lttn_category', function (Blueprint $table) {
+        Schema::create('category', function (Blueprint $table) {
             $table->id(); // Tạo cột 'id' với auto_increment và primary key
             $table->string('name', 1000);
             $table->string('slug', 1000)->nullable();

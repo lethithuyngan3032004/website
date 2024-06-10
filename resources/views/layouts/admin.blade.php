@@ -7,6 +7,26 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+  <script>
+    // Hàm để ẩn thông báo sau 3 giây
+    function hideAlerts() {
+        var successAlert = document.getElementById('success-message');
+  
+        if (successAlert) {
+            setTimeout(function() {
+                successAlert.style.display = 'none';
+            }, 2000); 
+        }
+  
+    }
+  
+    // Gọi hàm ẩn thông báo khi trang được tải
+    document.addEventListener('DOMContentLoaded', function() {
+        hideAlerts();
+    });
+  </script>
+
+
   @yield('header')
 </head>
 <body class="hold-transition sidebar-mini">

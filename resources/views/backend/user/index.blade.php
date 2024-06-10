@@ -27,7 +27,7 @@
           <a class="btn btn-sm btn-success" href="{{ route("admin.user.create")}}">Thêm
             <i class="fas fa-plus"></i>
           </a>
-          <a class="btn btn-sm btn-danger" href="#">Thùng rác
+          <a class="btn btn-sm btn-danger" href="{{ route('admin.user.trash') }}">Thùng rác
             <i class="fas fa-trash"></i>
           </a>
         </div>
@@ -49,18 +49,21 @@
         <thead>
           <tr>
             <th class="text-center" style="width:30px">#</th>
-            <th class="text-center" style="width:190px">Hình</th>
+            <th class="text-center" style="width:90px">Hình</th>
             <th class="text-center">Họ tên</th>
             <th class="text-center">Tên đăng nhập</th>
             <th class="text-center">Điện thoại</th>
             <th class="text-center">Email</th>
             <th class="text-center">Vai trò</th>
-            <th class="text-center" style="width:190px">Chức năng</th>
+            <th class="text-center" style="width:90px">Chức năng</th>
             <th class="text-center" style="width:30px">ID</th>
           </tr>
         </thead>
         <tbody>
           @foreach($list as $row)
+          @php
+          $arg=['id'=>$row->id];
+        @endphp
           <tr>
             <td class="text-center">
               <input type="checkbox" name="checkID[]" id="checkID" value="{{ $row->id }}">
@@ -74,16 +77,22 @@
             <td>{{ $row->email }}</td>
             <td>{{ $row->roles }}</td>
             <td class="text-center">
-              <a href="{{ route("admin.user.status",['id'=>$row->id]) }}" class="btn btn-sm btn-success" >
+              @if ($row->status == 1)
+              <a href="{{ route('admin.user.status', $row->id) }}" class="btn btn-success btn-xs">
                 <i class="fas fa-toggle-on"></i>
               </a>
-              <a href="{{ route("admin.user.show",['id'=>$row->id]) }}" class="btn btn-sm btn-info" >
-                <i class="fas fa-eye"></i>
+              @else
+              <a href="{{ route('admin.user.status', $row->id) }}" class="btn btn-danger btn-xs">
+                <i class="fas fa-toggle-off"></i>
               </a>
-              <a href="{{ route("admin.user.edit",['id'=>$row->id]) }}" class="btn btn-sm btn-primary" >
+              @endif
+              <a href="{{ route('admin.user.edit', $row->id) }}" class="btn btn-primary btn-xs">
                 <i class="fas fa-edit"></i>
               </a>
-              <a href="{{ route("admin.user.destroy",['id'=>$row->id]) }}" class="btn btn-sm btn-danger" >
+              <a href="{{ route('admin.user.show', $row->id) }}" class="btn btn-info btn-xs">
+                <i class="fas fa-eye"></i>
+              </a>
+              <a href="{{ route('admin.user.delete', $row->id) }}" class="btn btn-danger btn-xs">
                 <i class="fas fa-trash"></i>
               </a>
             </td>
